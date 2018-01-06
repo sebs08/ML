@@ -19,7 +19,7 @@ def get_policy(theta, state, gradient=None):
     output_policy = []
     phi_values = []
     sum = 0
-    theta = theta.reshape(3)
+    theta = theta.reshape(4)
 
     # actions:
     #       0 -- push left
@@ -27,17 +27,18 @@ def get_policy(theta, state, gradient=None):
     #       2 -- push right
 
     for action in range(env.action_space.n):
-        phi = np.zeros(shape=3)
+        phi = np.zeros(shape=4)
         p = state[0]    # position
         v = state[1]    # velocity
 
         # define features
         if v < 0 and action == 0: # velocity is negative (going backwards) and actions is push left
             phi[0] = 1
-        if v >= 0 and action == 2: # velocity is negative (going backwards) and actions is push right
+        if v > 0 and action == 2: # velocity is negative (going backwards) and actions is push right
             phi[2] = 1
-        if p > 0 and action == 2:
-            phi[2] = 1 # position of the car
+        if v == 0 and action == 1:
+            phi[1] = 1 # position of the car
+        phi[3] = -p
 
 
         phi_values.append(phi)
@@ -77,12 +78,14 @@ def inference(theta):
         policy = get_policy(theta, state)
         action = action_selection(policy)
         state, _, finished, _ = env.step(action)
+        #print(state)
         env.render()
 
 def learn(theta=None):
     if theta is None:
-        epsilon = 50
-        theta = np.random.uniform(-epsilon, epsilon, 3)
+        epsilon = 2
+        theta = np.random.uniform(-epsilon, epsilon, 4)
+        print(theta)
     num_episodes = 50 # number of parameter updates
 
     for i in range(num_episodes):
@@ -109,8 +112,8 @@ def learn(theta=None):
         # adapt parameters of policy representation
         R = 0
         gamma = 0.99
-        alpha = 0.02
-        #alpha = 1./((i+1)**2)
+        alpha = 0.1/(i+1)**2
+        #alpha = 2./((i+1)**2)
         for t in reversed(range(0,T-1,3)):
             index = (t+1)*3
             state = episode[index - 3]
@@ -123,7 +126,7 @@ def learn(theta=None):
             phi_s_a = phi_values[action]
             gradient = copy.deepcopy(phi_values[action])
 
-            for j in  range(env.action_space.n):
+            for j in range(env.action_space.n):
                 phi_s_c = phi_values[j]
                 gradient -= policy[j] * phi_values[j]
 
