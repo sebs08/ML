@@ -14,13 +14,13 @@ Input:
     
 
 Reward : 
-* Gewinnen +1; Verlieren -1
+* Gewinnen +1; Verlieren -1; sonst 0
 
 Aktionen:
 * mögliche Spielzüge gegeben das Feld
 
 Zustände:
-* Spielfeld
+* Spielfeld Zustände
 
 Exploration:
 * epsilon greedy ? 
@@ -30,4 +30,12 @@ Ziel:
 
 Netz:
 * CNN | DNN | RNN ?
-
+* implementation mittels Tensorflow
+* soll Gewichte laden & speichern können
+* Architekturvorschlag: 
+    - Conv2D Size 2x2 Stride 1
+    - Conv2D Size 3x3 Stride 1
+    - Dense Layer
+    - 1 Dim Output
+* Idee: Züge simulieren und Gewinnwahrscheinlichkeit ermitteln (output)
+* Netz soll *nicht* lernen was Aktionen bewirken, nur aktionen auswerten (kennt Aktionen)

@@ -1,7 +1,7 @@
 # Agent classes
 
 import numpy as np
-import tensorflow
+import tensorflow as tf
 
 class RandomAgent(object):
     def __init__(self, state):
@@ -18,9 +18,9 @@ class RandomAgent(object):
                 valid_action = True
         return action
 
-class CnnAgent(object):
+class CNNAgent(object):
     options = {
-        
+
         # hyper parameters
         'input_space': 42,
         'epsilon_rate': 0.1,
@@ -30,6 +30,9 @@ class CnnAgent(object):
     }
 
     def __init__(self, load_weights=False):
+        pass
+
+    def initialize(self):
         pass
 
     def load_weights(self):
