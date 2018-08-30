@@ -2,6 +2,7 @@
 
 import numpy as np
 import tensorflow as tf
+from ConnectFour import reward_functions
 
 class RandomAgent(object):
     def __init__(self, state):
@@ -18,6 +19,7 @@ class RandomAgent(object):
                 valid_action = True
         return action
 
+
 class CNNAgent(object):
     options = {
 
@@ -25,7 +27,10 @@ class CNNAgent(object):
         'input_space': 42,
         'epsilon_rate': 0.1,
         'learning_rate': 0.001,
-        'reward_function': lambda state: state,
+
+        # functions
+        'reward_function': reward_functions.simple_reward,  # move to game-handler
+        'loss_function': tf.losses.mean_squared_error,
 
     }
 
@@ -33,18 +38,45 @@ class CNNAgent(object):
         pass
 
     def initialize(self):
+        input_layer = tf.placeholder(dtype=tf.float32, shape=[None, 6, 7], name='Input')
+
+        conv1 = tf.layers.conv2d(inputs=input_layer,
+                                 filters=6,
+                                 kernel_size=[2,2],
+                                 padding='same',
+                                 activation=tf.nn.relu)
+
+        conv2 = tf.layers.conv2d(inputs=conv1,
+                                 filters=20,
+                                 kernel_size=[3,3],
+                                 paddint='same',
+                                 activation=tf.nn.relu)
+
+        dense1 = tf.layers.dense(inputs=conv2, units=40, activation=tf.nn.relu)
+
+        logits = tf.layers.dense(inputs=dense1, units=1, activation=tf.nn.relu)
+
+    def predict(self):
         pass
 
-    def load_weights(self):
+    def load(self):
+        # load weights / inference
         pass
 
-    def save_weights(self):
+    def save(self):
+        # possible to save weights & graph separately??
         pass
 
     def initialize(self):
+        # initialize TensorFlor Variables
+        # load stuff
         pass
 
-    def get_current_state(self):
+    def get_current_state(self, state):
+        pass
+
+    def preprocess(self):
+        # needed ??
         pass
 
     def get_action(self):
@@ -56,5 +88,3 @@ class CNNAgent(object):
     def train(self):
         pass
 
-    def predict(self):
-        pass
