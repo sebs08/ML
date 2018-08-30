@@ -180,15 +180,17 @@ class ConnectFour():
         except IndexError:
             print("invalid move")
 
-    def run_game(self, agent1, agent2):
+    def run_game(self, agent1, agent2, print_steps=False):
         move_count = 0
         game_done = False
         while not game_done and move_count <= 41: # <= 41 since starting at 0
             player = move_count % 2 + 1
 
             if player == 1:
+                agent1.get_observation(self.game_field)
                 action = agent1.get_action()
             else:
+                agent2.get_observation(self.mirror_field())
                 action = agent2.get_action()
 
             self.request_move(player, action)
@@ -197,11 +199,14 @@ class ConnectFour():
 
             game_done = self.check_four()
 
+            print(self.game_field)
+
         print("Game finished")
 
 
 if __name__ == "__main__":
-    from agent import RandomAgent
+    from ConnectFour.agent import RandomAgent
+
     Game = ConnectFour()
     Agent1 = RandomAgent(state=Game.game_field)
     Agent2 = RandomAgent(state=Game.game_field)
